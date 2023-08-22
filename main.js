@@ -69,38 +69,6 @@ function calculateCFHomeSizePts(sizeOfHome) {
 			return 0;
 	}
 }
-// This updates the points the points shown next to the input boxes.
-function updatePtsFor(elementId) {
-	switch (elementId) {
-		case "household":
-			const householdPts = calculateCFHouseholdPts(housholdSelector.value);
-			if (householdPts != 0) {
-				document.querySelector(
-					"#householdPts"
-				).textContent = ` ${householdPts} Pts added to your total`;
-			} else {
-				document.querySelector("#householdPts").textContent = null;
-			}
-		case "homeSize":
-			const homeSizePts = calculateCFHomeSizePts(homeSizeSelector.value);
-			if (homeSizePts != 0) {
-				document.querySelector(
-					"#homeSizePts"
-				).textContent = ` ${homeSizePts} Pts added to your total`;
-			} else {
-				document.querySelector("#homeSizePts").textContent = null;
-			}
-	}
-	totalCFPts = calculateCarbonFootprintPts(
-		housholdSelector.value,
-		homeSizeSelector.value
-	);
-	if (totalCFPts != 0) {
-		totalCFHeading.textContent = ` Your Carbon Footprint is ${totalCFPts} pts.`;
-	} else {
-		totalCFHeading.textContent = initialCFHeading;
-	}
-}
 
 // global scope
 
@@ -124,14 +92,37 @@ In reviewing the MDN docs I the method below for passing data into the event lis
 If I am understading right, 'this' refers to the object captured by the anonymous function.
 I could have also entered the id string directly as an argument. 
  */
-const householdSelectorChanged = function () {
-	updatePtsFor(this.id);
-};
-
-const homeSizeSelectorChanged = function () {
-	updatePtsFor(this.id);
-};
 // DOM manipulation
+function householdSelectorChanged() {
+	const householdPts = calculateCFHouseholdPts(this.value);
+	document.querySelector(
+		"#householdPts"
+	).textContent = ` ${householdPts} Pts added to your total`;
+	updateCFTotal();
+}
+
+function homeSizeSelectorChanged() {
+	const homeSizePts = calculateCFHomeSizePts(this.value);
+	document.querySelector(
+		"#homeSizePts"
+	).textContent = ` ${homeSizePts} Pts added to your total`;
+	updateCFTotal();
+}
+
+function updateCFTotal() {
+	const homeholdSelectorValue = document.querySelector("#household").value;
+	const homeSizeSelectorValue = document.querySelector("#homeSize").value;
+	const totalCFPts = calculateCarbonFootprintPts(
+		homeholdSelectorValue,
+		homeSizeSelectorValue
+	);
+
+	if (totalCFPts != 0) {
+		totalCFHeading.textContent = ` Your Carbon Footprint is ${totalCFPts} pts.`;
+	} else {
+		totalCFHeading.textContent = initialCFHeading;
+	}
+}
 //create event listeners passing the references to anonymous functions which are executed when changes are made to these elements
 housholdSelector.addEventListener("change", householdSelectorChanged, false);
 homeSizeSelector.addEventListener("change", homeSizeSelectorChanged, false);
