@@ -81,34 +81,37 @@ But using the MDN docs I was able to find a way to use querySelector
 const housholdSelector = document.querySelector("#household");
 const homeSizeSelector = document.querySelector("#homeSize");
 const totalCFHeading = document.querySelector("#totalCF");
-const initialCFHeading = "Make selections to see how they effect your score";
+const initialCFHeading = document.querySelector("h2").textContent;
 
 // create reference to anonymous functions used in addEventListener method calls
-/*
-note: 
-I could have created the anonymous functions directly in the addEventListener call.
-But I thought this looks cleaner and is easier to read.
-In reviewing the MDN docs I the method below for passing data into the event listener using the this keyword.
-If I am understading right, 'this' refers to the object captured by the anonymous function.
-I could have also entered the id string directly as an argument. 
- */
+
 // DOM manipulation
+//I have made separate functions for each DOM element update
+// changes the household span text content
 function householdSelectorChanged() {
 	const householdPts = calculateCFHouseholdPts(this.value);
-	document.querySelector(
-		"#householdPts"
-	).textContent = ` ${householdPts} Pts added to your total`;
+	if (householdPts != 0) {
+		document.querySelector(
+			"#householdPts"
+		).textContent = ` ${householdPts} Pts added to your total`;
+	} else {
+		document.querySelector("#householdPts").textContent = null;
+	}
 	updateCFTotal();
 }
-
+// changes the homeSize span text content
 function homeSizeSelectorChanged() {
 	const homeSizePts = calculateCFHomeSizePts(this.value);
-	document.querySelector(
-		"#homeSizePts"
-	).textContent = ` ${homeSizePts} Pts added to your total`;
+	if (homeSizePts != 0) {
+		document.querySelector(
+			"#homeSizePts"
+		).textContent = ` ${homeSizePts} Pts added to your total`;
+	} else {
+		document.querySelector("#homeSizePts").textContent = null;
+	}
 	updateCFTotal();
 }
-
+// changes the totalCF h2 text content
 function updateCFTotal() {
 	const homeholdSelectorValue = document.querySelector("#household").value;
 	const homeSizeSelectorValue = document.querySelector("#homeSize").value;
