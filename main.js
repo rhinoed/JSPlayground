@@ -127,5 +127,13 @@ function updateCFTotal() {
 	}
 }
 //create event listeners passing the references to anonymous functions which are executed when changes are made to these elements
-housholdSelector.addEventListener("change", householdSelectorChanged, false);
-homeSizeSelector.addEventListener("change", homeSizeSelectorChanged, false);
+function addListeners() {
+	housholdSelector.addEventListener("change", householdSelectorChanged, false);
+	homeSizeSelector.addEventListener("change", homeSizeSelectorChanged, false);
+}
+
+function removeListeners(){
+	housholdSelector.removeEventListener()
+}
+addListeners();
+
