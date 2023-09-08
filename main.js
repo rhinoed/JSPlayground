@@ -121,10 +121,69 @@ function updateCFTotal() {
 	);
 
 	if (totalCFPts != 0) {
+		let newResult = new cfpResultObj();
+		if (newResult.shouldDisplay()){
+			console.log(newResult);
+		}
 		totalCFHeading.textContent = ` Your Carbon Footprint is ${totalCFPts} pts.`;
 	} else {
 		totalCFHeading.textContent = initialCFHeading;
 	}
+}
+function cfpObjConstrutor(){
+	// object properties
+	this.user = "John"
+	this.household
+	this.homeSize
+	this.householdPts = calculateCFHouseholdPts(this.household)
+	this.homeSizePts = calculateCFHomeSizePts(this.homeSize)
+
+	// object methods
+	this.cfpTotal = function(){
+		return this.householdPts + this.homeSizePts
+	}
+	this.shouldDisplay = function(){
+		const inputs = document.getElementsByTagName("tinput")
+		const checkInputs = [];
+		for (input of inputs){
+			checkInputs.push(input.value)
+		}
+		if (checkInputs.includes("")){
+			return false;
+		}else{
+			return true;
+		}
+
+	}
+	this.inTheGreen = function(){
+		if (this.cfpTotal() <= 60){
+			return true;
+		}else{
+			return false;
+		}
+	}
+}
+
+class cfpResultObj {
+constructor(){
+	this.household = document.querySelector("#household").value,
+	this.homeSize = document.querySelector("#homeSize").value,
+	this.householdPts = calculateCFHouseholdPts(this.household),
+	this.homeSizePts = calculateCFHomeSizePts(this.homeSize),
+	this.shouldDisplay = function (){
+
+		if (this.household == ""|| this.homeSize == ""){
+			return false;
+		}else{
+			return true;
+		}
+	},
+	this.cfpToal = function(){
+		console.log(household);
+		console.log(homeSize);
+		return this.householdPts + this.homeSizePts
+	};
+}
 }
 //create event listeners passing the references to anonymous functions which are executed when changes are made to these elements
 housholdSelector.addEventListener("change", householdSelectorChanged, false);

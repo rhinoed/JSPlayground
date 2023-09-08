@@ -1,18 +1,10 @@
-/*
-CIT 93
-Mark Edmunds
-August 19, 2023  
-w3 CF Household and Functions
- */
+// CIT 93
+// Mark Edmunds
+// August 30, 2023  
+// w4 CF Intron To Iteration
 
-/*
-note:
-There are a lot of changes to this code from the code that was in the code along.
-I made these changes with the idea that in calculator webpages there are HTML elements used for input.
-So I added the code to accept user input and respond to changes.
-I also made changes to the code which I think helps improve it's modularity and adaptability.
-*/
-
+// top-level const
+const cfpData = [];
 // functions
 // this fuction is call easch time the user changes their selection
 function calculateCarbonFootprintPts(numberInHoushold, sizeOfHome) {
@@ -22,12 +14,7 @@ function calculateCarbonFootprintPts(numberInHoushold, sizeOfHome) {
 	);
 }
 
-/*
-note:
-I am using return statements instead of changing the value of a varible.
-Functions can both accept arguments and return values.
-And by saying return 14; for example the reult of calling the function is 14
-*/
+
 function calculateCFHouseholdPts(numberInHoushold) {
 	if (numberInHoushold == 1) {
 		return 14;
@@ -48,10 +35,7 @@ function calculateCFHouseholdPts(numberInHoushold) {
 		console.log("no update to points household is empty");
 		return 0;
 	}
-	// This will never print because it is after the return statement
-	console.log(
-		`Given the number in household ${numberInHoushold} the carbon footprint score is ${carbonFooprintPoints}`
-	);
+
 }
 // like the above this function just returns a vaule that is used in the calculateCarbonFootprintPts function.
 function calculateCFHomeSizePts(sizeOfHome) {
@@ -69,27 +53,13 @@ function calculateCFHomeSizePts(sizeOfHome) {
 			return 0;
 	}
 }
-
-// global scope
-
-// create reference to HTML elements
-/* 
-note: 
-I am most familar with using document.getElementById. 
-But using the MDN docs I was able to find a way to use querySelector
-*/
-const housholdSelector = document.querySelector("#household");
-const homeSizeSelector = document.querySelector("#homeSize");
-const totalCFHeading = document.querySelector("#totalCF");
-const initialCFHeading = document.querySelector("h2").textContent;
-
-// create reference to anonymous functions used in addEventListener method calls
-
-// DOM manipulation
-//I have made separate functions for each DOM element update
-// changes the household span text content
+// This updates the points the points shown next to the input boxes.
 function householdSelectorChanged() {
+
 	const householdPts = calculateCFHouseholdPts(this.value);
+	console.log(
+		`based on your selection your household size points are ${householdPts}`
+	);
 	if (householdPts != 0) {
 		document.querySelector(
 			"#householdPts"
@@ -97,11 +67,15 @@ function householdSelectorChanged() {
 	} else {
 		document.querySelector("#householdPts").textContent = null;
 	}
-	updateCFTotal();
+	prepareToStart();
 }
 // changes the homeSize span text content
 function homeSizeSelectorChanged() {
+
 	const homeSizePts = calculateCFHomeSizePts(this.value);
+	console.log(
+		`based on your selection your home size points are ${homeSizePts}`
+	);
 	if (homeSizePts != 0) {
 		document.querySelector(
 			"#homeSizePts"
@@ -109,23 +83,120 @@ function homeSizeSelectorChanged() {
 	} else {
 		document.querySelector("#homeSizePts").textContent = null;
 	}
-	updateCFTotal();
+
+	prepareToStart();
 }
-// changes the totalCF h2 text content
-function updateCFTotal() {
-	const homeholdSelectorValue = document.querySelector("#household").value;
+function prepareToStart() {
+	const totalCFHeading = document.querySelector("#totalCF");
+	const householdSelectorValue = document.querySelector("#household").value;
 	const homeSizeSelectorValue = document.querySelector("#homeSize").value;
 	const totalCFPts = calculateCarbonFootprintPts(
-		homeholdSelectorValue,
+		householdSelectorValue,
 		homeSizeSelectorValue
 	);
-
-	if (totalCFPts != 0) {
-		totalCFHeading.textContent = ` Your Carbon Footprint is ${totalCFPts} pts.`;
-	} else {
-		totalCFHeading.textContent = initialCFHeading;
+	// added this so result only update when both inputs have a value
+	if (householdSelectorValue != "" && homeSizeSelectorValue != "") {
+		const cfpResultObj = {
+			"household": householdSelectorValue,
+			"homeSize": homeSizeSelectorValue,
+			"householdPts": calculateCFHouseholdPts(householdSelectorValue),
+			"homeSizePts": calculateCFHomeSizePts(homeSizeSelectorValue),
+			"total": calculateCarbonFootprintPts(householdSelectorValue,homeSizeSelectorValue)
+			
+		}
+		cfpData.push(cfpResultObj);
+		displayOutput();
+		totalCFHeading.textContent = "";
+	} else if (householdSelectorValue == "" || homeSizeSelectorValue == "") {
+		totalCFHeading.textContent = `Make selection for both to see results below your score so far is ${totalCFPts}`;
+	}else{
+		totalCFHeading.textContent = "Make selections to see how they effect your score";
 	}
+	
 }
-//create event listeners passing the references to anonymous functions which are executed when changes are made to these elements
-housholdSelector.addEventListener("change", householdSelectorChanged, false);
-homeSizeSelector.addEventListener("change", homeSizeSelectorChanged, false);
+
+// DOM manipulation
+function addListener(element, event, func) {
+	//create event listeners passing the functions which are executed when changes are made to these elements
+	element.addEventListener(event, func);
+}
+
+// function start(numInHousehold, sizeOfHome) {
+// 	// creating for week 4 code along - arrays
+	
+// 	//const householdPts = calculateCFHouseholdPts(numInHousehold);
+// 	//const homeSizePts = calculateCFHomeSizePts(sizeOfHome);
+// 	//const total = calculateCarbonFootprintPts(numInHousehold, sizeOfHome);
+// 	// used unshift instead of push so the newest array appears first
+// 	const cfpResultObj = {
+//     "household": numInHousehold,
+//     "homeSize": sizeOfHome,
+//     "householdPts": calculateCFHouseholdPts(numInHousehold),
+//     "homeSizePts": calculateCFHomeSizePts(sizeOfHome),
+//     "total": function(){return this.householdPts + this.homeSizePts}
+// }
+// 	cfpData.push(cfpResultObj);
+// 	displayOutput();
+// }
+
+function displayOutput() {
+	const output = document.getElementById("output");
+	const newParagraph = document.createElement("p");
+	const outputLabels = [
+		"household input",
+		"home size input",
+		"household points",
+		"home size point",
+		"Total Carbon Footprint",
+	];
+	const ouputStrings = [];
+	console.log(cfpData);
+	for (array of cfpData) {
+		// console.log(obj.total());
+		// const newParagraph = document.createElement("p");
+		// const resultHeader = document.createElement("h3");
+		// resultHeader.textContent = `Based on Ypour Selections of ${obj.household} members in household & ${obj.homeSize} for size of home`;
+		// const totalHeader = document.createElement("h3");
+		// totalHeader.textContent = `Your points are ${obj.householdPts} household Pts, ${obj.homeSizePts} home size Pts, for a total of ${obj.total()}`;
+		// newParagraph.appendChild(resultHeader);
+		// newParagraph.appendChild(totalHeader);
+		// output.appendChild(newParagraph);
+		console.log(array);
+		const result_list = document.createElement("table");
+		result_list.className = "result_list";
+	
+		for (index in array) {
+			console.log(index);
+			const dataRow = document.createElement("tr");
+			const rowData1 = document.createElement("td");
+			const rowData2 = document.createElement("td");
+			//const listItem = document.createElement("li");
+			rowData1.textContent = `${outputLabels[index]}`
+			rowData2.textContent = `${array[index]}`
+			dataRow.appendChild(rowData1);
+			dataRow.appendChild(rowData2);
+			result_list.appendChild(dataRow);
+			//listItem.textContent = `${outputLabels[index]} ${array[index]}`;
+			//result_list.appendChild(listItem);
+		}
+		newParagraph.appendChild(result_list)
+	}
+	// used replaceChildren because I call displayOut everytime start is called
+	output.replaceChildren(newParagraph);
+}
+// add event listener
+addListener(
+	document.querySelector("#household"),
+	"change",
+	householdSelectorChanged
+);
+addListener(
+	document.querySelector("#homeSize"),
+	"change",
+	homeSizeSelectorChanged
+);
+// the first four calls to start more are made with user input
+// start(4, "medium");
+// start(4, "large");
+// start(4, "small");
+// start(4, "apartment"); // There are about 28 diffenent ways of calling this function which give unique results

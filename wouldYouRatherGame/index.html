@@ -5,9 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Would You Rather</title>
     <script defer src="main.js"></script>
+    <style>
+        .grid-container{
+            display: inline-grid;
+            display: -webkit-inline-flex;
+            display: -moz-inline-grid;
+            display: -ms-inline-grid;
+            grid-template-columns: auto auto auto;
+        }
+        .options {
+            text-overflow: unset;    
+            background-color: cadetblue;
+            text-align: center;
+            color: azure;
+            line-height: 75px;
+            min-height:75px;
+            padding: 10px;
+            border-radius: 20px;
+           
+        }
+    </style>
 </head>
 <body>
     <h1 class="heading" id="title">Would You Rather</h1>
-    <div id="output"></div>
+    <div id="output" class="grid-container">
+        <div id="choices-container">
+            <p id="choice0"></p>
+            </span><p class="options">or</p>
+            <p id="choice1"></p>
+        </div>
+    </div>
 </body>
 </html>
